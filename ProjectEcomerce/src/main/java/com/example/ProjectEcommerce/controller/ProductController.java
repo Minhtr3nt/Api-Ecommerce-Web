@@ -1,6 +1,7 @@
 package com.example.ProjectEcommerce.controller;
 
 import com.example.ProjectEcommerce.dto.ProductDto;
+import com.example.ProjectEcommerce.exceptions.AlreadyExistsException;
 import com.example.ProjectEcommerce.exceptions.ProductNotFoundException;
 import com.example.ProjectEcommerce.exceptions.ResourceNotFoundException;
 import com.example.ProjectEcommerce.model.Product;
@@ -14,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,9 +26,13 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<ApiResponse>getAllProducts(){
 
+        try {
             List<Product> products = productService.getAllProducts();
             List<ProductDto> productDtos = productService.getConvertedProducts(products);
             return ResponseEntity.ok(new ApiResponse("Success", productDtos));
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(),null));
+        }
 
     }
     @GetMapping("product/{productId}/product")
@@ -54,7 +58,7 @@ public class ProductController {
         }
     }
     @PutMapping("/product/{productId}/update")
-    public ResponseEntity<ApiResponse> updateProduct(@RequestBody ProductUpdateRequest request, @PathVariable Long id){
+    public ResponseEntity<ApiResponse> updateProduct(@RequestBody ProductUpdateRequest request, @PathVariable("productId") Long id){
         try {
             Product product = productService.updateProduct(request,id);
             ProductDto productDto = productService.convertToDto(product);
