@@ -11,6 +11,7 @@ import com.example.ProjectEcommerce.request.ProductUpdateRequest;
 import com.example.ProjectEcommerce.service.product.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,6 +47,8 @@ public class ProductController {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN)")
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequest product){
         try {
@@ -57,6 +60,7 @@ public class ProductController {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(),null));
         }
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN)")
     @PutMapping("/product/{productId}/update")
     public ResponseEntity<ApiResponse> updateProduct(@RequestBody ProductUpdateRequest request, @PathVariable("productId") Long id){
         try {
@@ -68,7 +72,7 @@ public class ProductController {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN)")
     @DeleteMapping("product/{productId}/delete")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId){
         try {
@@ -83,7 +87,7 @@ public class ProductController {
     public ResponseEntity<ApiResponse> getProductByBrandAndName(@RequestParam String brandName, @RequestParam String productName){
 
         try {
-            List<Product> products = productService.getProductByBrandAndName(brandName, productName);
+            List<Product> products = productService.getProductsByBrandAndName(brandName, productName);
             List<ProductDto> productDtos = productService.getConvertedProducts(products);
 
             if(products.isEmpty()){
@@ -99,7 +103,7 @@ public class ProductController {
     public ResponseEntity<ApiResponse> getProductByCategoryAndBrand(@RequestParam String category, @RequestParam String brandName){
 
         try {
-            List<Product> products = productService.getProductByCategoryAndBrand(category, brandName);
+            List<Product> products = productService.getProductsByCategoryAndBrand(category, brandName);
             if(products.isEmpty()){
                 return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("No products found", null));
             }
@@ -116,7 +120,7 @@ public class ProductController {
     public ResponseEntity<ApiResponse> getProductByName(@RequestParam String name){
 
         try {
-            List<Product> products = productService.getProductByName(name);
+            List<Product> products = productService.getProductsByName(name);
             if(products.isEmpty()){
                 return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("No products found", null));
             }
@@ -131,7 +135,7 @@ public class ProductController {
     @GetMapping("/product/by-brand")
     public ResponseEntity<ApiResponse> findProductByBrand(@RequestParam String brand){
         try {
-            List<Product> products = productService.getProductByBrand(brand);
+            List<Product> products = productService.getProductsByBrand(brand);
             if(products.isEmpty()){
                 return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("No products found", null));
             }

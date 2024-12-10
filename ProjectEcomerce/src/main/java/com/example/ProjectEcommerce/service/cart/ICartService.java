@@ -1,5 +1,6 @@
 package com.example.ProjectEcommerce.service.cart;
 
+import com.example.ProjectEcommerce.dto.CartDto;
 import com.example.ProjectEcommerce.model.Cart;
 import com.example.ProjectEcommerce.model.User;
 
@@ -15,4 +16,6 @@ public interface ICartService {
 
 
     Cart getCartByUserId(Long userId);
+
+    CartDto convertToDto(Cart cart);
 }

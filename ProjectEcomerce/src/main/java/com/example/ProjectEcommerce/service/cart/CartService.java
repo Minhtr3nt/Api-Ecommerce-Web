@@ -1,11 +1,13 @@
 package com.example.ProjectEcommerce.service.cart;
 
+import com.example.ProjectEcommerce.dto.CartDto;
 import com.example.ProjectEcommerce.exceptions.ResourceNotFoundException;
 import com.example.ProjectEcommerce.model.Cart;
 import com.example.ProjectEcommerce.model.User;
 import com.example.ProjectEcommerce.repository.CartItemRepository;
 import com.example.ProjectEcommerce.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class CartService implements ICartService{
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    private final ModelMapper modelMapper;
     private final AtomicLong cartIdGenerator = new AtomicLong(0);
 
     @Override
@@ -55,5 +58,10 @@ public class CartService implements ICartService{
     @Override
     public Cart getCartByUserId(Long userId) {
         return cartRepository.findByUserId(userId);
+    }
+
+    @Override
+    public CartDto convertToDto(Cart cart){
+        return modelMapper.map(cart, CartDto.class);
     }
 }

@@ -13,6 +13,7 @@ import com.example.ProjectEcommerce.service.cart.CartService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,7 +29,7 @@ public class OrderService implements IOrderService{
     private final CartService cartService;
     private final ModelMapper modelMapper;
 
-
+    @Transactional
     @Override
     public Order placeOrder(Long userId) {
         Cart cart = cartService.getCartByUserId(userId);

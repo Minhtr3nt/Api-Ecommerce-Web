@@ -15,6 +15,7 @@ import com.example.ProjectEcommerce.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +37,8 @@ public class ProductService implements IProductService {
         //Then set as new product category.
 
         if(productExists(request.getName(), request.getBrand())){
-            throw new AlreadyExistsException(request.getBrand()+" "+request.getName()+" already exists, you may update product instead!!!");
+            throw new AlreadyExistsException(request.getBrand()+" "
+                    +request.getName()+" already exists, you may update product instead!!!");
         }
 
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
@@ -52,19 +54,20 @@ public class ProductService implements IProductService {
         return productRepository.existsByNameAndBrand(name,brand);
     }
     private Product createProduct(AddProductRequest request, Category category){
-        return Product.builder()
-                .name(request.getName())
-                .brand(request.getBrand())
-                .price(request.getPrice())
-                .inventory(request.getInventory())
-                .description(request.getDescription())
-                .category(category)
-                .build();
+        return new Product(
+                request.getName(),
+                request.getBrand(),
+                request.getPrice(),
+                request.getInventory(),
+                request.getDescription(),
+                category
+        );
     }
 
     @Override
     public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("Product not found!"));
+        return productRepository.findById(id)
+                .orElseThrow(()-> new ProductNotFoundException("Product not found!"));
     }
 
     @Override
@@ -105,23 +108,23 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<Product> getProductByBrand(String brand) {
+    public List<Product> getProductsByBrand(String brand) {
 
         return productRepository.findByBrand(brand);
     }
 
     @Override
-    public List<Product> getProductByCategoryAndBrand(String category, String brand) {
+    public List<Product> getProductsByCategoryAndBrand(String category, String brand) {
         return productRepository.findByCategoryNameAndBrand(category, brand);
     }
 
     @Override
-    public List<Product> getProductByName(String name) {
+    public List<Product> getProductsByName(String name) {
         return productRepository.findByName(name);
     }
 
     @Override
-    public List<Product> getProductByBrandAndName(String brand, String name) {
+    public List<Product> getProductsByBrandAndName(String brand, String name) {
         return productRepository.findByBrandAndName(brand, name);
     }
 

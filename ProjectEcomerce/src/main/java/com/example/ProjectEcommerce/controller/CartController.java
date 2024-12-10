@@ -1,5 +1,6 @@
 package com.example.ProjectEcommerce.controller;
 
+import com.example.ProjectEcommerce.dto.CartDto;
 import com.example.ProjectEcommerce.exceptions.ResourceNotFoundException;
 import com.example.ProjectEcommerce.model.Cart;
 import com.example.ProjectEcommerce.reponse.ApiResponse;
@@ -21,7 +22,8 @@ public class CartController {
     public ResponseEntity<ApiResponse> getCart(@PathVariable Long cartId){
         try {
             Cart cart = cartService.getCart(cartId);
-            return  ResponseEntity.ok(new ApiResponse("Get cart success", cart));
+            CartDto cartDto = cartService.convertToDto(cart);
+            return  ResponseEntity.ok(new ApiResponse("Get cart success", cartDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
