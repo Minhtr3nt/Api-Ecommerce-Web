@@ -8,6 +8,7 @@ import com.example.ProjectEcommerce.repository.CartItemRepository;
 import com.example.ProjectEcommerce.repository.CartRepository;
 import com.example.ProjectEcommerce.service.product.IProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ public class CartItemService implements ICartItemService{
     private final CartRepository cartRepository;
 
     @Override
+
     public void addItemToCart(Long cartId, Long productId, int quantity) {
         //get the cart
         // get the product

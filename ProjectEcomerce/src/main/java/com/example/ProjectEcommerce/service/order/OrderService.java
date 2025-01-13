@@ -11,6 +11,7 @@ import com.example.ProjectEcommerce.repository.OrderRepository;
 import com.example.ProjectEcommerce.repository.ProductRepository;
 import com.example.ProjectEcommerce.service.cart.CartService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OrderService implements IOrderService{
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;

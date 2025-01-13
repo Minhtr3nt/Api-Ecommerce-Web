@@ -5,12 +5,13 @@ import com.example.ProjectEcommerce.exceptions.AlreadyExistsException;
 import com.example.ProjectEcommerce.exceptions.ResourceNotFoundException;
 import com.example.ProjectEcommerce.model.Category;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class CategoryService implements ICategoryService{
     private final CategoryRepository categoryRepository;

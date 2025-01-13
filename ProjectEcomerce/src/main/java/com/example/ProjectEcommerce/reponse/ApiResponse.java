@@ -1,11 +1,17 @@
 package com.example.ProjectEcommerce.reponse;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse {
-    private String message;
-    private Object data;
+
+     String message;
+     Object data;
 }
