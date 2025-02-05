@@ -81,4 +81,10 @@ public class ImageService implements IImageService{
         }
 
     }
+
+    @Override
+    public List<Image> getImageByProduct(Long product_id) {
+        List<Image> images = imageRepository.findByProductId(product_id);
+        return images;
+    }
 }

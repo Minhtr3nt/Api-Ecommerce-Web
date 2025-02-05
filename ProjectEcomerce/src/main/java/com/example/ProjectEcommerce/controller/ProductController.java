@@ -48,7 +48,7 @@ public class ProductController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN)")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequest product){
         try {
@@ -60,7 +60,7 @@ public class ProductController {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(),null));
         }
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN)")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/product/{productId}/update")
     public ResponseEntity<ApiResponse> updateProduct(@RequestBody ProductUpdateRequest request, @PathVariable("productId") Long id){
         try {
@@ -72,7 +72,7 @@ public class ProductController {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN)")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("product/{productId}/delete")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId){
         try {

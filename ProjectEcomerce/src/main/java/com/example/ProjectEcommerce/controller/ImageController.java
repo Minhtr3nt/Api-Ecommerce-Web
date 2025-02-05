@@ -6,6 +6,7 @@ import com.example.ProjectEcommerce.model.Image;
 import com.example.ProjectEcommerce.reponse.ApiResponse;
 import com.example.ProjectEcommerce.service.image.IImageService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -17,14 +18,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("${api.prefix}/images")
-public class ImageController {
+public class    ImageController {
     private final IImageService imageService;
+    private final ModelMapper modelMapper;
 
-    @PostMapping("upload")
+    @PostMapping("/upload")
     public ResponseEntity<ApiResponse> saveImage(@RequestParam List<MultipartFile> files,@RequestParam Long productId){
         try {
             List<ImageDto> imageDtos = imageService.saveImage(files, productId);
@@ -41,6 +44,12 @@ public class ImageController {
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(image.getFileType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+image.getFileName()+ "\"")
                 .body(resource);
+    }
+    @GetMapping("/get-img-by-product/{productId}")
+    public ResponseEntity<ApiResponse> getImgByProduct(@PathVariable Long productId){
+        List<Image> images = imageService.getImageByProduct(productId);
+        List<ImageDto> imgs =  images.stream().map((element) -> modelMapper.map(element, ImageDto.class)).collect(Collectors.toList());
+        return ResponseEntity.ok(new ApiResponse("List image", imgs));
     }
 
     @PutMapping("/image/{imageId}/update")

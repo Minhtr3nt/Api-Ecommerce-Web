@@ -34,7 +34,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
     private void createDefaultUserIfNotExists(){
         Role userRole = roleRepository.findByName("ROLE_USER").get();
         for(int i=1; i<=5; i++){
-            String defaultEmail = "user "+i+"@email.com";
+            String defaultEmail = "user"+i+"@email.com";
             if(userRepository.existsByEmail(defaultEmail)){
                 continue;
             }

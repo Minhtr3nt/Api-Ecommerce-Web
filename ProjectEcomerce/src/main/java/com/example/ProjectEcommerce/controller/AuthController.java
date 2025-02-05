@@ -3,6 +3,7 @@ package com.example.ProjectEcommerce.controller;
 import com.example.ProjectEcommerce.reponse.ApiResponse;
 import com.example.ProjectEcommerce.reponse.JwtResponse;
 import com.example.ProjectEcommerce.request.LoginRequest;
+import com.example.ProjectEcommerce.request.ValidateTokenRequest;
 import com.example.ProjectEcommerce.sercurity.jwt.JwtUtils;
 import com.example.ProjectEcommerce.sercurity.user.ShopUserDetails;
 import jakarta.validation.Valid;
@@ -37,10 +38,20 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateTokenForUser(authentication);
             ShopUserDetails userDetails = (ShopUserDetails) authentication.getPrincipal();
-            JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), jwt);
+            JwtResponse jwtResponse = new JwtResponse(userDetails.getId(), userDetails.getEmail(), jwt);
             return ResponseEntity.ok(new ApiResponse("Login success", jwtResponse));
         } catch (AuthenticationException e) {
            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<ApiResponse> validate(@Valid @RequestBody ValidateTokenRequest request){
+        boolean check = jwtUtils.validateToken(request.getToken());
+        if(check){
+            return ResponseEntity.ok(new ApiResponse("Token valid", true));
+        }else{
+            return ResponseEntity.ok(new ApiResponse("Token invalid, login again", false));
         }
     }
 }

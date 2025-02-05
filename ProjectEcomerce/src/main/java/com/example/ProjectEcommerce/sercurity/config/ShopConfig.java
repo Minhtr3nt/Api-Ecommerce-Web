@@ -21,14 +21,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Configuration
-@EnableMethodSecurity(prePostEnabled = true)
-public class ShopConfig {
+@EnableMethodSecurity
+public class ShopConfig implements WebMvcConfigurer {
     private final ShopUserDetailsService userDetailsService;
     private final JwtAuthEntrypoint authEntryPoint;
     private static final List<String> SECURED_URLS = List.of("/api/v1/carts/**", "/api/v1/cartItems/**");
@@ -64,9 +66,16 @@ public class ShopConfig {
                 .exceptionHandling(exception-> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth->auth.requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated()
-                        .anyRequest().authenticated());
+                        .anyRequest().permitAll());
         http.authenticationProvider(daoAuthenticationProvider());
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**") // Cho phép CORS cho tất cả các endpoint bắt đầu bằng /api/
+                .allowedOrigins("http://localhost:5173") // Thay thế bằng địa chỉ của ứng dụng React của bạn (ví dụ: http://localhost:3000)
+                .allowedMethods("GET", "POST", "PUT", "DELETE") // Cho phép các method này
+                .allowedHeaders("*"); // Cho phép tất cả các header
     }
 }
